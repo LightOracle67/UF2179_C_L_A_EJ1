@@ -83,7 +83,7 @@ public class EjercicioPractico1 extends JFrame {
 		lblCalculadoraDeEnvos.setFont(new Font("Dialog", Font.BOLD, 20));
 		panel.add(lblCalculadoraDeEnvos, "cell 0 0,alignx center,growy");
 		lblCalculadoraDeEnvos.setForeground(Color.BLACK);
-		lblCalculadoraDeEnvos.setBackground(Color.DARK_GRAY);
+		lblCalculadoraDeEnvos.setBackground(Color.MAGENTA);
 		
 		JLabel lblCiudadOrigen = new JLabel("Ciudad Origen:");
 		contentPane.add(lblCiudadOrigen, "cell 1 1,alignx left");
@@ -93,6 +93,7 @@ public class EjercicioPractico1 extends JFrame {
 		txtFld_CiudadOrigen.setColumns(10);
 		
 		rdbtnNacional_Origen = new JRadioButton("Nacional");
+		rdbtnNacional_Origen.setSelected(true);
 		btnGrp_Origen.add(rdbtnNacional_Origen);
 		contentPane.add(rdbtnNacional_Origen, "cell 2 2");
 		
@@ -108,6 +109,7 @@ public class EjercicioPractico1 extends JFrame {
 		contentPane.add(txtFld_CiudadDestino, "cell 2 3 2 1,growx");
 		
 		rdbtnNacional_Destino = new JRadioButton("Nacional");
+		rdbtnNacional_Destino.setSelected(true);
 		btnGrp_Destino.add(rdbtnNacional_Destino);
 		contentPane.add(rdbtnNacional_Destino, "cell 2 4");
 		
@@ -145,20 +147,17 @@ public class EjercicioPractico1 extends JFrame {
 	protected void validaDatos() {
 		String ciudadOrigen = txtFld_CiudadOrigen.getText();
 		String ciudadDestino = txtFld_CiudadDestino.getText();
+		Integer tipoEnvio= cmbBox_TipoEnvio.getSelectedIndex();
+		Integer peso = (Integer) spinner_Peso.getValue();
 		if(ciudadOrigen == null || ciudadOrigen.isBlank() || ciudadDestino == null || ciudadDestino.isBlank()) {
 			JOptionPane.showMessageDialog(this, "Error, uno de los campos 'Ciudad Origen' o 'Ciudad Destino'\n está vacío. Rellénelos antes de continuar.", "Error - Faltan datos.",
 					JOptionPane.INFORMATION_MESSAGE);
 			return;
 		}
-		calculaEnvio();
+		calculaEnvio(ciudadOrigen,ciudadDestino,tipoEnvio,peso);
 	}
 
-	private void calculaEnvio() {
-		String ciudadOrigen = txtFld_CiudadOrigen.getText();
-		String ciudadDestino = txtFld_CiudadDestino.getText();
-		Integer tipoEnvio= cmbBox_TipoEnvio.getSelectedIndex();
-		Integer peso = (Integer) spinner_Peso.getValue();
-		double totalPeso = 0;
+	private void calculaEnvio(String ciudadOrigen,String ciudadDestino,Integer tipoEnvio,Integer peso) {
 		double precio = 0;
 		if(rdbtnNacional_Origen.isSelected() && rdbtnNacional_Destino.isSelected()) {
 			precio=precio+envioNacional;
@@ -166,10 +165,8 @@ public class EjercicioPractico1 extends JFrame {
 			precio=precio+envioExtranjero;
 		}
 		precio=precio+Recargos[tipoEnvio];
-		if(peso>=10) {
-			totalPeso=(peso/10)*recargoPeso;
-			precio=precio+totalPeso;
-		}
+			precio=precio+((peso/10)*recargoPeso);
+		//mensaje correcto
 		JOptionPane.showMessageDialog(this, "Origen: "+ciudadOrigen+"\nDestino: "+ciudadDestino+"\nTipo: "+cmbBox_TipoEnvio.getSelectedItem()+"\nPeso: "+peso+" Kg\nImporte: "+precio+" €","Cálculo",JOptionPane.INFORMATION_MESSAGE);
 	}
 
